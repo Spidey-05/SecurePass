@@ -1,6 +1,4 @@
-# 🔐 SecurePass — Zero-Knowledge Password Manager
-                                    - by Spidey
-
+# 🔐 SecurePass — Zero-Knowledge Password Manager    
 A production-grade password manager with strict zero-knowledge architecture. Your master password and plaintext vault data **never leave your device**.
 
 ---
