@@ -1,4 +1,5 @@
 # 🔐 SecurePass — Zero-Knowledge Password Manager
+                                    - by Spidey
 
 A production-grade password manager with strict zero-knowledge architecture. Your master password and plaintext vault data **never leave your device**.
 
@@ -22,10 +23,10 @@ A production-grade password manager with strict zero-knowledge architecture. You
 │                                                                 │
 │  Master Password                                                │
 │       │                                                         │
-│       ├─► PBKDF2 (100k iter) ──► Auth Password (hex)           │
+│       ├─► PBKDF2 (100k iter) ──► Auth Password (hex)            │
 │       │         └── email as salt                               │
 │       │                                                         │
-│       └─► PBKDF2 (600k iter) ──► KEK (Key Encryption Key)      │
+│       └─► PBKDF2 (600k iter) ──► KEK (Key Encryption Key)       │
 │                 └── random salt (stored server-side)            │
 │                              │                                  │
 │                              ▼                                  │
