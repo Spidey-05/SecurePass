@@ -99,6 +99,13 @@ JWT_ACCESS_SECRET=<min-32-char-random-string>
 JWT_REFRESH_SECRET=<min-32-char-random-string>
 COOKIE_SECRET=<min-32-char-random-string>
 FRONTEND_URL=http://localhost:3000
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM=SecurePass <your@gmail.com>
+
 ```
 
 **Frontend `.env.local`:**
