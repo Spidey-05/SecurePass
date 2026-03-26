@@ -67,7 +67,7 @@ A production-grade password manager with strict zero-knowledge architecture. You
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourname/securepass.git
+git clone https://github.com/Spidey-05/securepass.git
 cd securepass
 
 # Backend
