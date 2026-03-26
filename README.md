@@ -22,10 +22,10 @@ A production-grade password manager with strict zero-knowledge architecture. You
 │                                                                 │
 │  Master Password                                                │
 │       │                                                         │
-│       ├─► PBKDF2 (100k iter) ──► Auth Password (hex)           │
+│       ├─► PBKDF2 (100k iter) ──► Auth Password (hex)            │
 │       │         └── email as salt                               │
 │       │                                                         │
-│       └─► PBKDF2 (600k iter) ──► KEK (Key Encryption Key)      │
+│       └─► PBKDF2 (600k iter) ──► KEK (Key Encryption Key)       │
 │                 └── random salt (stored server-side)            │
 │                              │                                  │
 │                              ▼                                  │
@@ -68,7 +68,7 @@ A production-grade password manager with strict zero-knowledge architecture. You
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourname/securepass.git
+git clone https://github.com/Spidey-05/SecurePass.git
 cd securepass
 
 # Backend
