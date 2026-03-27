@@ -21,7 +21,7 @@ const nextConfig = {
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: https:",
             "font-src 'self'",
-            "connect-src 'self' http://localhost:5000 http://localhost:3000",
+            "connect-src 'self' http://localhost:5000 http://localhost:3000 https://securepass-api-dieq.onrender.com",
             "frame-ancestors 'none'",
           ].join('; '),
         },
