@@ -23,7 +23,7 @@ const AUTH_ITERATIONS = 100_000;    // Separate derivation for auth password
 
 // ─── Utility Helpers ───────────────────────────────────────────────────────────
 
-function bufferToBase64(buffer: ArrayBuffer): string {
+function bufferToBase64(buffer: ArrayBufferLike): string {
   const bytes = new Uint8Array(buffer);
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
@@ -41,7 +41,7 @@ function base64ToBuffer(base64: string): ArrayBuffer {
   return bytes.buffer;
 }
 
-function bufferToHex(buffer: ArrayBuffer): string {
+function bufferToHex(buffer: ArrayBufferLike): string {
   return Array.from(new Uint8Array(buffer))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
@@ -159,9 +159,9 @@ export async function encryptVaultKey(
   const iv = generateIv();
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: AES_ALGORITHM, iv },
+    { name: AES_ALGORITHM, iv: iv as any },
     kek,
-    rawVaultKey
+    rawVaultKey as any
   );
 
   // AES-GCM output is ciphertext + 16-byte auth tag concatenated
@@ -196,9 +196,9 @@ export async function decryptVaultKey(
   combined.set(authTagBytes, ciphertext.length);
 
   const rawKey = await crypto.subtle.decrypt(
-    { name: AES_ALGORITHM, iv: ivBytes },
+    { name: AES_ALGORITHM, iv: ivBytes as any },
     kek,
-    combined.buffer
+    combined.buffer as any
   );
 
   return crypto.subtle.importKey(
@@ -231,9 +231,9 @@ export async function encryptData(
   const iv = generateIv();
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: AES_ALGORITHM, iv },
+    { name: AES_ALGORITHM, iv: iv as any },
     vaultKey,
-    plaintext
+    plaintext as any
   );
 
   const encryptedBytes = new Uint8Array(encrypted);
@@ -263,9 +263,9 @@ export async function decryptData<T = unknown>(
   combined.set(authTagBytes, ciphertext.length);
 
   const decrypted = await crypto.subtle.decrypt(
-    { name: AES_ALGORITHM, iv: ivBytes },
+    { name: AES_ALGORITHM, iv: ivBytes as any },
     vaultKey,
-    combined.buffer
+    combined.buffer as any
   );
 
   const decoder = new TextDecoder();

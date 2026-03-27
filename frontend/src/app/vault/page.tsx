@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import {
   Plus, Search, Star, KeyRound, CreditCard, FileText, User,
-  Copy, Eye, EyeOff, Edit2, Trash2, Filter, Loader2, Globe,
+  Copy, Eye, EyeOff, Edit2, Trash2, Globe,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 

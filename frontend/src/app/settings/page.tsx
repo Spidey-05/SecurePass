@@ -8,12 +8,10 @@ import {
 import toast from 'react-hot-toast';
 
 import { useSessionStore } from '@/stores/session.store';
-import { useVaultStore } from '@/stores/vault.store';
-import { useAuthStore } from '@/stores/auth.store';
-import { encryptData, decryptData } from '@/lib/crypto';
 import { cn } from '@/lib/utils';
-import { authApi } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { useVaultStore } from '@/stores/vault.store';
+import { encryptData, decryptData } from '@/lib/crypto';
 
 const AUTO_LOCK_OPTIONS = [
   { label: 'Never', value: 0 },
@@ -28,7 +26,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const { autoLockMinutes, setAutoLockMinutes, vaultKey, lock } = useSessionStore();
   const { items, clearVault } = useVaultStore();
-  const { clearAuth } = useAuthStore();
+
   const [exporting, setExporting] = useState(false);
   const [importing, setImporting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -41,7 +39,7 @@ export default function SettingsPage() {
       const backupData = {
         version: 1,
         exportedAt: new Date().toISOString(),
-        items: items.map(i => ({ id: i._id, itemType: i.itemType, data: i.data })),
+        items: items.map((i: any) => ({ id: i._id, itemType: i.itemType, data: i.data })),
       };
       const encrypted = await encryptData(backupData, vaultKey);
 

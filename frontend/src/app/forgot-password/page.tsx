@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
-  Shield, AlertTriangle, KeyRound, ArrowLeft,
+  AlertTriangle, KeyRound, ArrowLeft,
   Mail, Loader2, CheckCircle2, Info, Eye, EyeOff,
 } from 'lucide-react';
 import api from '@/lib/api';

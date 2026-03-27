@@ -20,7 +20,7 @@ const CHARSETS = {
   symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?',
   ambiguous: /[l1IoO0]/g,
   similar: /[vV]/g,
-} as const;
+};
 
 export const DEFAULT_OPTIONS: PasswordOptions = {
   length: 20,

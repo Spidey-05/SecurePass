@@ -10,7 +10,6 @@ import {
     generatePassword,
     generatePassphrase,
     analyzePasswordStrength,
-    DEFAULT_OPTIONS,
 } from '@/lib/password';
 import { cn } from '@/lib/utils';
 

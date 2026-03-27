@@ -9,7 +9,7 @@ import {
   CreditCard, KeyRound, Edit2, Loader2, Zap,
 } from 'lucide-react';
 
-import { generatePassword, analyzePasswordStrength, DEFAULT_OPTIONS } from '@/lib/password';
+import { generatePassword, analyzePasswordStrength } from '@/lib/password';
 import { copyToClipboard, cn } from '@/lib/utils';
 import type { VaultItem, VaultItemData, VaultItemType } from '@/types';
 import toast from 'react-hot-toast';
@@ -32,14 +32,7 @@ const loginSchema = z.object({
   notes: z.string().max(5000).optional().default(''),
 });
 
-const noteSchema = z.object({
-  type: z.literal('note'),
-  name: z.string().min(1, 'Name is required').max(100),
-  content: z.string().min(1, 'Content is required').max(10000),
-});
-
 type LoginForm = z.infer<typeof loginSchema>;
-type NoteForm = z.infer<typeof noteSchema>;
 
 const ITEM_TYPES: Array<{ value: VaultItemType; label: string; icon: React.ElementType }> = [
   { value: 'login', label: 'Login', icon: KeyRound },
