@@ -1,4 +1,4 @@
-# 🔐 SecurePass — Zero-Knowledge Password Manager
+# 🔐 SecurePass — Zero-Knowledge Password Manager developed by Rk
 
 A production-grade password manager with strict zero-knowledge architecture. Your master password and plaintext vault data **never leave your device**.
 
@@ -68,7 +68,7 @@ A production-grade password manager with strict zero-knowledge architecture. You
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourname/securepass.git
+git clone https://github.com/Spidey-05/SecurePass.git
 cd securepass
 
 # Backend
