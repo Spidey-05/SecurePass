@@ -112,7 +112,7 @@ export const helmetConfig = helmet({
 export const accessTokenCookieOptions = {
   httpOnly: true,
   secure: env.NODE_ENV === 'production',
-  sameSite: 'strict' as const,
+  sameSite: 'lax' as const,
   maxAge: 15 * 60 * 1000, // 15 minutes
   path: '/',
 };
@@ -120,7 +120,7 @@ export const accessTokenCookieOptions = {
 export const refreshTokenCookieOptions = {
   httpOnly: true,
   secure: env.NODE_ENV === 'production',
-  sameSite: 'strict' as const,
+  sameSite: 'lax' as const,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   path: '/', // must be '/' so Next.js middleware can read it on page navigations
 };
