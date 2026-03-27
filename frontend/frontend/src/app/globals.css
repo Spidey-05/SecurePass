@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --scrollbar-thumb: #334155;
+    --scrollbar-track: #0f172a;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+
+  ::selection {
+    background: #4f46e5;
+    color: white;
+  }
+}
+
+@layer components {
+
+  /* ── Glass Card ─────────────────────────────────────────────────────────── */
+  .glass {
+    @apply bg-surface-800/60 backdrop-blur-md border border-slate-700/50 rounded-2xl;
+  }
+
+  .glass-sm {
+    @apply bg-surface-800/40 backdrop-blur-sm border border-slate-700/40 rounded-xl;
+  }
+
+  /* ── Buttons ────────────────────────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white shadow-lg shadow-brand-900/30 hover:shadow-brand-900/50 hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply btn bg-surface-700 hover:bg-surface-700/80 active:bg-surface-800 text-slate-200 border border-slate-600/50 hover:border-slate-500/50;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 hover:border-red-500/50;
+  }
+
+  .btn-ghost {
+    @apply btn hover:bg-surface-700/60 text-slate-400 hover:text-slate-200;
+  }
+
+  .btn-icon {
+    @apply btn p-2 rounded-lg;
+  }
+
+  /* ── Form Inputs ────────────────────────────────────────────────────────── */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl bg-surface-900/80 border border-slate-700/60 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200 text-sm;
+  }
+
+  .input-error {
+    @apply border-red-500/60 focus:ring-red-500/30 focus:border-red-500/50;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-slate-300 mb-1.5;
+  }
+
+  /* ── Badge ──────────────────────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium;
+  }
+
+  .badge-brand {
+    @apply badge bg-brand-500/20 text-brand-300 border border-brand-500/30;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-500/20 text-emerald-300 border border-emerald-500/30;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-500/20 text-amber-300 border border-amber-500/30;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-500/20 text-red-300 border border-red-500/30;
+  }
+
+  /* ── Strength Bar ───────────────────────────────────────────────────────── */
+  .strength-bar {
+    @apply h-1.5 rounded-full transition-all duration-500;
+  }
+
+  /* ── Sidebar Item ───────────────────────────────────────────────────────── */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-surface-700/50 transition-all duration-150 cursor-pointer;
+  }
+
+  .nav-item-active {
+    @apply nav-item text-slate-100 bg-brand-600/20 border border-brand-500/20;
+  }
+
+  /* ── Vault Item Card ────────────────────────────────────────────────────── */
+  .vault-card {
+    @apply glass-sm p-4 flex items-center gap-4 hover:bg-surface-700/50 hover:border-slate-600/50 transition-all duration-150 cursor-pointer;
+  }
+
+  /* ── Shimmer Loading ────────────────────────────────────────────────────── */
+  .shimmer {
+    @apply bg-gradient-to-r from-surface-800 via-surface-700 to-surface-800 bg-[length:400%_100%] animate-shimmer rounded-lg;
+  }
+
+  /* ── Modal Overlay ──────────────────────────────────────────────────────── */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+  }
+
+  .modal {
+    @apply glass w-full max-w-lg max-h-[90vh] overflow-y-auto animate-scale-in shadow-2xl shadow-black/50;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-400 to-violet-400 bg-clip-text text-transparent;
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(135deg, #6366f1, #8b5cf6) 1;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .font-mono {
+    font-family: var(--font-jetbrains), monospace;
+  }
+}
