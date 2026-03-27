@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
-const BASE_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:5000/api';
+const isProd = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+const BASE_URL = isProd ? '/api' : (process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:5000/api');
 
 // ─── Create Instance ───────────────────────────────────────────────────────────
 
