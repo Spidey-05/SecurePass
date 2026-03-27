@@ -93,7 +93,11 @@ function LoginPageInner() {
       startAutoLockTimer();
 
       toast.success('Welcome back!');
-      router.push(redirectTo);
+      
+      // Small delay to ensure state and cookies are recognized before redirect
+      setTimeout(() => {
+        router.push(redirectTo);
+      }, 300);
     } catch (err: unknown) {
       const serverMsg = (err as {
         response?: { data?: { error?: { message?: string } } };
