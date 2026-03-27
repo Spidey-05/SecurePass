@@ -12,8 +12,13 @@ import { logger } from '../utils/logger';
 
 export const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
-    const allowed = [env.FRONTEND_URL, 'http://localhost:3000'];
-    if (!origin || allowed.includes(origin)) {
+    const allowed = [
+      env.FRONTEND_URL,
+      'http://localhost:3000',
+      'https://secure-pass-theta.vercel.app',
+      'https://secure-pass.vercel.app'
+    ];
+    if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
       callback(new Error('CORS: Origin not allowed'));
