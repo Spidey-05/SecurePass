@@ -28,6 +28,14 @@ const nextConfig = {
       ],
     },
   ],
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://securepass-api-dieq.onrender.com/api/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
