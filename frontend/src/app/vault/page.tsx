@@ -248,7 +248,7 @@ export default function VaultPage() {
             return (
               <div
                 key={item._id}
-                className="vault-card animate-fade-in"
+                className="vault-card group animate-fade-in"
                 onClick={() => openView(item)}
               >
                 {/* Icon */}
