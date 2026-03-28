@@ -45,7 +45,7 @@ export const refreshSchema = z.object({
 
 const encryptedPayloadSchema = z.object({
   encryptedData: z.string().min(1, 'Encrypted data is required'),
-  iv: z.string().length(24, 'IV must be 24 chars (12 bytes base64)'),
+  iv: z.string().length(16, 'IV must be 16 chars (12 bytes base64)'),
   authTag: z.string().length(24, 'Auth tag must be 24 chars (16 bytes base64)'),
 });
 
@@ -68,7 +68,7 @@ export const updateVaultItemSchema = z.object({
   body: z
     .object({
       encryptedData: z.string().optional(),
-      iv: z.string().length(24).optional(),
+      iv: z.string().length(16).optional(),
       authTag: z.string().length(24).optional(),
       isFavorite: z.boolean().optional(),
       folderId: z.string().max(100).optional().nullable(),
