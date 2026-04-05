@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import {
   Plus, Search, Star, KeyRound, CreditCard, FileText, User,
-  Copy, Eye, EyeOff, Edit2, Trash2, Globe,
+  Copy, Eye, EyeOff, Edit2, Trash2, Globe, ExternalLink,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -318,6 +318,24 @@ export default function VaultPage() {
                         <Copy className="w-4 h-4" />
                       </button>
                     </>
+                  )}
+                  {isLogin && loginData?.url && loginData?.password && (
+                    <button
+                      className="btn-icon text-slate-400 hover:text-emerald-400"
+                      title="Visit site & copy credentials"
+                      onClick={() => {
+                        window.open(loginData.url!, '_blank', 'noopener,noreferrer');
+                        copyToClipboard(loginData.password!, 30_000);
+                        toast.success(
+                          loginData.username
+                            ? `Opened site · username: ${loginData.username} · password copied`
+                            : 'Opened site · password copied to clipboard',
+                          { duration: 6000 }
+                        );
+                      }}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </button>
                   )}
                   <button
                     className="btn-icon text-slate-400 hover:text-amber-400"

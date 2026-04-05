@@ -7,8 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   AlertTriangle, KeyRound, ArrowLeft,
-  Mail, Loader2, CheckCircle2, Info, Eye, EyeOff,
+  Mail, Loader2, CheckCircle2, Info, Eye, EyeOff, Server,
 } from 'lucide-react';
+import axios from 'axios';
 import api from '@/lib/api';
 import { cn } from '@/lib/utils';
 
@@ -19,41 +20,80 @@ type FormData = z.infer<typeof schema>;
 
 type Stage = 'form' | 'sent' | 'devHint';
 
+// Render free tier can take up to 60s to wake up; we show a message after 4s
+const SLOW_THRESHOLD_MS = 4000;
+const HINT_TIMEOUT_MS = 30000;
+
 export default function ForgotPasswordPage() {
   const [stage, setStage] = useState<Stage>('form');
   const [submittedEmail, setSubmittedEmail] = useState('');
   const [devHint, setDevHint] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isWaking, setIsWaking] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
+  const doSendHint = async (email: string) => {
+    const { data } = await api.post<{
+      success: boolean;
+      message: string;
+      devMode?: boolean;
+      hint?: string;
+    }>('/auth/send-hint', { email }, { timeout: HINT_TIMEOUT_MS });
+    return data;
+  };
+
   const onSubmit = async (form: FormData) => {
     setIsLoading(true);
+    setIsWaking(false);
     setErrorMsg('');
+
+    // Show a friendly 'waking server' message if the request takes >4s
+    const wakingTimer = setTimeout(() => setIsWaking(true), SLOW_THRESHOLD_MS);
+
+    const attempt = async () => {
+      try {
+        const data = await doSendHint(form.email);
+        setSubmittedEmail(form.email);
+        if (data.devMode && data.hint !== undefined) {
+          setDevHint(data.hint);
+          setStage('devHint');
+        } else {
+          setStage('sent');
+        }
+        return true;
+      } catch (err) {
+        // Retry once on timeout (backend cold-start)
+        if (axios.isAxiosError(err) && err.code === 'ECONNABORTED') {
+          return false;
+        }
+        throw err;
+      }
+    };
+
     try {
-      const { data } = await api.post<{
-        success: boolean;
-        message: string;
-        devMode?: boolean;
-        hint?: string;
-      }>('/auth/send-hint', { email: form.email });
-
-      setSubmittedEmail(form.email);
-
-      // Development mode: server returns hint directly (SMTP not configured)
-      if (data.devMode && data.hint !== undefined) {
-        setDevHint(data.hint);
-        setStage('devHint');
-      } else {
-        setStage('sent');
+      const ok = await attempt();
+      if (!ok) {
+        // One silent retry
+        await doSendHint(form.email).then((data) => {
+          setSubmittedEmail(form.email);
+          if (data.devMode && data.hint !== undefined) {
+            setDevHint(data.hint);
+            setStage('devHint');
+          } else {
+            setStage('sent');
+          }
+        });
       }
     } catch {
-      setErrorMsg('Something went wrong. Please try again.');
+      setErrorMsg('Server is unavailable. Please try again in a moment.');
     } finally {
+      clearTimeout(wakingTimer);
+      setIsWaking(false);
       setIsLoading(false);
     }
   };
@@ -113,7 +153,9 @@ export default function ForgotPasswordPage() {
                 {errorMsg && (
                   <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 mb-4">
                     <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-                    <p className="text-red-400 text-xs">{errorMsg}</p>
+                    <p className="text-red-400 text-xs">
+                      {errorMsg.includes('404') ? 'Account not found. Please check the email.' : 'Something went wrong. Please try again later.'}
+                    </p>
                   </div>
                 )}
 
@@ -136,7 +178,11 @@ export default function ForgotPasswordPage() {
                   </div>
                   <button type="submit" disabled={isLoading} className="btn-primary w-full h-11">
                     {isLoading ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
+                      isWaking ? (
+                        <><Server className="w-4 h-4 animate-pulse" /> Waking server up…</>
+                      ) : (
+                        <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
+                      )
                     ) : (
                       <><Mail className="w-4 h-4" /> Send hint to my email</>
                     )}
