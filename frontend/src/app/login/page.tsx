@@ -93,11 +93,11 @@ function LoginPageInner() {
       startAutoLockTimer();
 
       toast.success('Welcome back!');
-      
-      // Small delay to ensure state and cookies are recognized before redirect
-      setTimeout(() => {
-        router.push(redirectTo);
-      }, 300);
+
+      // Redirect immediately — auth state is fully settled at this point.
+      // No setTimeout needed; the dashboard guard already waits 500ms before
+      // triggering any redirect, so this is always safe.
+      router.replace(redirectTo);
     } catch (err: unknown) {
       const serverMsg = (err as {
         response?: { data?: { error?: { message?: string } } };
