@@ -21,8 +21,9 @@ function createTransporter() {
       user: env.SMTP_USER,
       pass: env.SMTP_PASS,
     },
-    connectionTimeout: 5000, // 5 seconds
-    greetingTimeout: 5000,
+    connectionTimeout: 15000, // 15 seconds
+    greetingTimeout: 15000,
+    socketTimeout: 15000,
   });
 }
 
