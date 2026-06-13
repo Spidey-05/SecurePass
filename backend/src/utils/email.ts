@@ -32,7 +32,7 @@ function createTransporter() {
 export async function sendPasswordHintEmail(
   to: string,
   hint: string | null
-): Promise<boolean> {
+): Promise<boolean | string> {
   const transporter = createTransporter();
 
   if (!transporter) {
@@ -105,9 +105,9 @@ export async function sendPasswordHintEmail(
     });
     logger.info(`Password hint email sent to ${to}`);
     return true;
-  } catch (err) {
+  } catch (err: any) {
     logger.error('Failed to send hint email:', err);
-    return false;
+    return err.message || 'Unknown SMTP error';
   }
 }
 
