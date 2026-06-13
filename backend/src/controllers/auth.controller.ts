@@ -97,7 +97,7 @@ export const sendHint = asyncHandler(async (req: Request, res: Response) => {
     const emailSent = await sendPasswordHintEmail(user.email, user.passwordHint ?? null);
 
     // In development without SMTP, return hint directly so it's testable
-    if (!emailSent && process.env['NODE_ENV'] !== 'production') {
+    if (emailSent !== true && process.env['NODE_ENV'] !== 'production') {
       res.json({
         success: true,
         devMode: true,
@@ -107,8 +107,8 @@ export const sendHint = asyncHandler(async (req: Request, res: Response) => {
       return;
     }
 
-    if (!emailSent) {
-      res.status(500).json({ success: false, error: { message: 'Failed to send email. Please check your SMTP configuration in the backend.' } });
+    if (emailSent !== true) {
+      res.status(500).json({ success: false, error: { message: `SMTP Error: ${emailSent}` } });
       return;
     }
 
