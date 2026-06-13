@@ -155,7 +155,7 @@ export default function ForgotPasswordPage() {
                   <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 mb-4">
                     <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
                     <p className="text-red-400 text-xs">
-                      {errorMsg.includes('404') ? 'Account not found. Please check the email.' : 'Something went wrong. Please try again later.'}
+                      {errorMsg}
                     </p>
                   </div>
                 )}
