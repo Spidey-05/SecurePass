@@ -3,7 +3,7 @@ import { authService } from '../services/auth.service';
 import { asyncHandler } from '../utils/errors';
 import { refreshTokenCookieOptions } from '../middleware/security.middleware';
 import { userRepository } from '../repositories/user.repository';
-import { sendPasswordHintEmail } from '../utils/email';
+import { sendPasswordHintEmail, isSmtpConfigured } from '../utils/email';
 import { logger } from '../utils/logger';
 
 function sendTokens(
@@ -66,10 +66,6 @@ export const getMe = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-/**
- * POST /api/auth/send-hint
- * Looks up password hint and emails it. Always returns 200 to prevent email enumeration.
- */
 export const sendHint = asyncHandler(async (req: Request, res: Response) => {
   const { email } = req.body as { email?: string };
 
@@ -84,10 +80,16 @@ export const sendHint = asyncHandler(async (req: Request, res: Response) => {
     message: 'If this account exists and has a hint, an email has been sent.',
   };
 
+  if (!isSmtpConfigured() && process.env['NODE_ENV'] === 'production') {
+    res.status(500).json({ success: false, error: { message: 'SMTP email delivery is not configured on this server.' } });
+    return;
+  }
+
   try {
     const user = await userRepository.findByEmail(email.toLowerCase().trim());
 
     if (!user) {
+      await new Promise(resolve => setTimeout(resolve, 300));
       res.json(genericOk);
       return;
     }
@@ -105,9 +107,14 @@ export const sendHint = asyncHandler(async (req: Request, res: Response) => {
       return;
     }
 
+    if (!emailSent) {
+      res.status(500).json({ success: false, error: { message: 'Failed to send email. Please check your SMTP configuration in the backend.' } });
+      return;
+    }
+
     res.json(genericOk);
   } catch (err) {
     logger.error('sendHint error:', err);
-    res.json(genericOk);
+    res.status(500).json({ success: false, error: { message: 'Internal server error.' } });
   }
 });

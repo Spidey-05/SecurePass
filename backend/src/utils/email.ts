@@ -4,8 +4,12 @@ import { logger } from './logger';
 
 // ── Create transporter ────────────────────────────────────────────────────────
 
+export function isSmtpConfigured(): boolean {
+  return !!(env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS);
+}
+
 function createTransporter() {
-  if (!env.SMTP_HOST || !env.SMTP_USER || !env.SMTP_PASS) {
+  if (!isSmtpConfigured()) {
     return null;
   }
 
@@ -17,6 +21,8 @@ function createTransporter() {
       user: env.SMTP_USER,
       pass: env.SMTP_PASS,
     },
+    connectionTimeout: 5000, // 5 seconds
+    greetingTimeout: 5000,
   });
 }
 
