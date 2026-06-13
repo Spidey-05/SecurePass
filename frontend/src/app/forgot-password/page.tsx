@@ -89,8 +89,9 @@ export default function ForgotPasswordPage() {
           }
         });
       }
-    } catch {
-      setErrorMsg('Server is unavailable. Please try again in a moment.');
+    } catch (err: any) {
+      const serverMsg = err?.response?.data?.error?.message;
+      setErrorMsg(serverMsg || 'Server is unavailable. Please try again in a moment.');
     } finally {
       clearTimeout(wakingTimer);
       setIsWaking(false);

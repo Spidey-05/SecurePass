@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -30,6 +30,29 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { isLocked, lock } = useSessionStore();
   const { stats, clearVault } = useVaultStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDesktopExpanded, setIsDesktopExpanded] = useState(true);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsDesktopExpanded(false);
+    }, 3000);
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    setIsDesktopExpanded(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsDesktopExpanded(false);
+    }, 3000);
+  };
 
   // Guard: redirect to login if not authenticated (wait for bootstrap to finish)
   useEffect(() => {
@@ -89,15 +112,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (!isAuthenticated) return null;
 
-  const SidebarContent = () => (
+  const renderSidebarContent = (isCollapsed: boolean = false) => (
     <>
       {/* Logo */}
-      <div className="p-5 border-b border-slate-800/60">
+      <div className={cn("p-5 border-b border-slate-800/60 transition-all duration-300", isCollapsed ? "px-4" : "")}>
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-brand-600/20 border border-brand-500/30 flex items-center justify-center shrink-0">
             <Shield className="w-5 h-5 text-brand-400" />
           </div>
-          <div className="min-w-0">
+          <div className={cn("min-w-0 transition-opacity duration-300", isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100 w-auto")}>
             <p className="font-bold text-slate-100 text-sm">SecurePass</p>
             <p className="text-xs text-slate-500 truncate">{user?.email}</p>
           </div>
@@ -105,7 +128,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Stats pill */}
-      <div className="px-4 pt-4">
+      <div className={cn("px-4 pt-4 transition-all duration-300", isCollapsed ? "hidden opacity-0 h-0 overflow-hidden pt-0" : "block opacity-100")}>
         <div className="glass-sm px-3 py-2 flex items-center justify-between">
           <span className="text-xs text-slate-500">Vault items</span>
           <span className="text-xs font-mono font-semibold text-brand-400">{stats.total}</span>
@@ -113,32 +136,32 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-x-hidden">
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className={cn(active ? 'nav-item-active' : 'nav-item')}
+              className={cn(active ? 'nav-item-active' : 'nav-item', "whitespace-nowrap")}
             >
               <Icon className="w-4 h-4 shrink-0" />
-              <span className="flex-1">{label}</span>
-              {active && <ChevronRight className="w-3.5 h-3.5 text-brand-400" />}
+              <span className={cn("flex-1 transition-opacity duration-300", isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100")}>{label}</span>
+              {active && !isCollapsed && <ChevronRight className="w-3.5 h-3.5 text-brand-400 shrink-0" />}
             </Link>
           );
         })}
       </nav>
 
       {/* Bottom actions */}
-      <div className="p-3 border-t border-slate-800/60 space-y-1">
-        <button onClick={handleLock} className="nav-item w-full">
+      <div className="p-3 border-t border-slate-800/60 space-y-1 overflow-x-hidden">
+        <button onClick={handleLock} className={cn("nav-item w-full whitespace-nowrap", isCollapsed ? "justify-center px-0" : "")}>
           <Lock className="w-4 h-4 shrink-0" />
-          Lock vault
+          <span className={cn("transition-opacity duration-300", isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100")}>Lock vault</span>
         </button>
-        <button onClick={handleLogout} className="nav-item w-full text-red-400/80 hover:text-red-400 hover:bg-red-500/10">
+        <button onClick={handleLogout} className={cn("nav-item w-full text-red-400/80 hover:text-red-400 hover:bg-red-500/10 whitespace-nowrap", isCollapsed ? "justify-center px-0" : "")}>
           <LogOut className="w-4 h-4 shrink-0" />
-          Sign out
+          <span className={cn("transition-opacity duration-300", isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100")}>Sign out</span>
         </button>
       </div>
     </>
@@ -152,8 +175,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* ── Desktop Sidebar ───────────────────────────────────────── */}
-      <aside className="hidden lg:flex w-64 shrink-0 h-screen sticky top-0 flex-col border-r border-slate-800/60 bg-surface-900/80 backdrop-blur-sm">
-        <SidebarContent />
+      <aside
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className={cn(
+          "hidden lg:flex shrink-0 h-screen sticky top-0 flex-col border-r border-slate-800/60 bg-surface-900/80 backdrop-blur-sm z-10 transition-all duration-300",
+          isDesktopExpanded ? "w-64" : "w-16"
+        )}
+      >
+        {renderSidebarContent(!isDesktopExpanded)}
       </aside>
 
       {/* ── Mobile: Header Bar ────────────────────────────────────── */}
@@ -195,7 +225,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             >
               <X className="w-5 h-5" />
             </button>
-            <SidebarContent />
+            {renderSidebarContent(false)}
           </aside>
         </div>
       )}
