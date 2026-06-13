@@ -24,7 +24,12 @@ function createTransporter() {
     connectionTimeout: 15000, // 15 seconds
     greetingTimeout: 15000,
     socketTimeout: 15000,
-  });
+    // IPv6 routing on cloud providers is the #1 cause of timeouts with Gmail.
+    // We force IPv4 (family: 4) to ensure the packets aren't blackholed.
+    family: 4,
+    ignoreTLS: false,
+    requireTLS: env.SMTP_PORT === 587,
+  } as nodemailer.TransportOptions);
 }
 
 // ── Send password hint email ──────────────────────────────────────────────────
